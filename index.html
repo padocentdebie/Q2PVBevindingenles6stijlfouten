@@ -6,11 +6,12 @@
     <title>Politie Academie - Stijlfouten Training</title>
     <style>
         :root {
-            --police-blue: #1c2b4a; /* Hoofdkleur Politie */
-            --bg-gray: #f9f9f9;     /* Zeer lichte achtergrond */
-            --border-gray: #dddddd; /* Subtiele randen */
-            --soft-oker: #d8c090;   /* Gematigd oker voor acties */
+            --police-blue: #1c2b4a;
+            --bg-gray: #f9f9f9;
+            --border-gray: #dddddd;
+            --soft-oker: #d8c090;
             --text-blue: #101c33;
+            --alert-red: #b03a2e;
         }
 
         body {
@@ -31,7 +32,6 @@
             text-align: center;
             border-bottom: 2px solid var(--border-gray);
         }
-        header h1 { margin: 0; font-size: 1.5rem; font-weight: normal; }
 
         .container {
             width: 95%;
@@ -41,16 +41,15 @@
             padding: 2rem;
             border-radius: 4px;
             border: 1px solid var(--border-gray);
-            box-shadow: none; /* Verwijderde schaduw voor meer rust */
         }
 
         .hidden { display: none !important; }
 
-        /* Modal / Factsheet - Rustiger gemaakt */
+        /* Factsheet Modal */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); /* Iets lichtere overlay */
+            background: rgba(0,0,0,0.6);
             display: flex; justify-content: center; align-items: center;
             z-index: 3000;
         }
@@ -60,14 +59,11 @@
             padding: 2.5rem;
             border-radius: 4px;
             max-width: 650px;
-            max-height: 85vh;
-            overflow-y: auto;
             border: 1px solid var(--border-gray);
         }
-        .modal-content h2 { color: var(--police-blue); margin-top: 0; font-weight: normal; }
 
         .instruction-box {
-            background: #f1f3f5; /* Lichtgrijs in plaats van geel */
+            background: #f1f3f5;
             border-left: 3px solid var(--police-blue);
             padding: 1.2rem;
             margin: 1rem 0;
@@ -88,10 +84,8 @@
             border-radius: 4px;
             padding: 1rem;
             background: #ffffff;
-            transition: background 0.2s;
         }
         .drop-zone.hover { background: #f1f3f5; }
-
         .drop-zone h3 { text-align: center; color: var(--police-blue); font-weight: normal; font-size: 1rem; margin-top: 0; }
 
         .sentence-pool {
@@ -100,7 +94,6 @@
             padding: 1.5rem;
             background: #f1f3f5;
             border-radius: 4px;
-            border: 1px solid var(--border-gray);
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
@@ -116,16 +109,15 @@
             font-size: 0.9rem;
             max-width: 320px;
         }
-        .draggable-sentence:active { cursor: grabbing; border-color: var(--police-blue); }
 
-        /* Resultaten Monitor */
+        /* Monitor Dashboard */
         .result-card {
             background: #ffffff;
             border: 1px solid var(--border-gray);
-            padding: 1rem;
-            margin-bottom: 0.5rem;
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.4rem;
             display: grid;
-            grid-template-columns: 1fr 120px 120px;
+            grid-template-columns: 1fr 100px 120px;
             align-items: center;
             border-radius: 4px;
         }
@@ -135,11 +127,10 @@
             padding: 0.8rem 1rem;
             margin-top: 1.5rem;
             border-radius: 4px;
-            border-bottom: 1px solid var(--border-gray);
-            display: flex; justify-content: space-between;
+            font-weight: bold;
         }
 
-        /* UI Buttons & Elements - Gematigd */
+        /* Buttons */
         button, select, input {
             width: 100%;
             padding: 12px 15px;
@@ -148,23 +139,25 @@
             border-radius: 4px;
             font-size: 1rem;
             box-sizing: border-box;
-            background: #ffffff;
         }
         
-        button { background: var(--police-blue); color: white; cursor: pointer; border: none; font-weight: bold; transition: opacity 0.2s; }
-        button:hover { opacity: 0.9; }
-
-        /* Rustigere knopstijlen */
+        button { background: var(--police-blue); color: white; cursor: pointer; border: none; font-weight: bold; }
         .btn-oker { background: var(--soft-oker); color: #403010; }
-        .btn-oker:hover { background: #cfb381; }
-
-        .btn-reset { background: #ffffff; color: var(--police-blue); border: 1px solid var(--police-blue); width: auto; padding: 8px 15px; font-weight: normal; margin-top: 1.5rem;}
-        .btn-reset:hover { background: #f1f3f5; }
+        .btn-reset { 
+            background: #ffffff; 
+            color: var(--alert-red); 
+            border: 1px solid var(--alert-red); 
+            width: auto; 
+            padding: 8px 15px; 
+            font-weight: normal; 
+            margin-top: 0;
+        }
+        .btn-reset:hover { background: #fdeded; }
         
         #thumb-animation {
             position: fixed;
             top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
-            font-size: 120px; z-index: 4000; pointer-events: none;
+            font-size: 100px; z-index: 4000; pointer-events: none;
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         #thumb-animation.show { transform: translate(-50%, -50%) scale(1.5); }
@@ -173,33 +166,29 @@
 <body>
 
 <header>
-    <h1>Opleiding GGP - Stijlfouten Training</h1>
+    <h1>Stijlfouten Training</h1>
 </header>
 
 <div class="container">
     <div id="login-screen">
-        <div style="text-align: right; margin-bottom: 1rem;">
-            <button class="btn-oker" onclick="toggleModal(true)" style="width:auto; padding: 8px 15px; font-weight: normal; font-size: 0.9rem;">Bekijk Theorie</button>
+        <div style="text-align: right;">
+            <button class="btn-oker" onclick="toggleModal(true)" style="width:auto; padding: 8px 15px; font-weight: normal;">Theorie Factsheet</button>
         </div>
-        <input type="text" id="username" placeholder="Voornaam">
+        <input type="text" id="username" placeholder="Naam">
         <select id="class-select">
-            <option value="delta">Delta</option>
-            <option value="echo">Echo</option>
-            <option value="foxtrot">Foxtrot</option>
-            <option value="golf">Golf</option>
-            <option value="hotel">Hotel</option>
-            <option value="juliett">Juliett</option>
-            <option value="lima">Lima</option>
-            <option value="mike">Mike</option>
+            <option value="delta">Delta</option><option value="echo">Echo</option>
+            <option value="foxtrot">Foxtrot</option><option value="golf">Golf</option>
+            <option value="hotel">Hotel</option><option value="juliett">Juliett</option>
+            <option value="lima">Lima</option><option value="mike">Mike</option>
         </select>
-        <button id="btn-login">Start Oefening</button>
-        <button id="btn-monitor-mode" style="background:none; color: gray; font-size: 0.8rem; margin-top: 1rem; font-weight: normal;">Monitor Dashboard (Docent)</button>
+        <button id="btn-login">Oefening Starten</button>
+        <button id="btn-monitor-mode" style="background:none; color: gray; font-size: 0.8rem; font-weight: normal;">Docenten Monitor</button>
     </div>
 
     <div id="exercise-screen" class="hidden">
-        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid var(--border-gray);">
-            <button onclick="toggleModal(true)" style="width:auto; padding:8px 15px; font-size:0.8rem; background: #607d8b; font-weight: normal;">Hulp nodig? (Theorie)</button>
-            <strong>Score: <span id="score-display">0</span> / 20</strong>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <button onclick="toggleModal(true)" style="width:auto; padding:8px 15px; font-size:0.8rem; background: #607d8b;">Uitleg</button>
+            <span>Score: <span id="score-display">0</span> / 20</span>
         </div>
         <div id="sentence-pool" class="sentence-pool"></div>
         <div class="drop-zones">
@@ -211,8 +200,8 @@
 
     <div id="monitor-screen" class="hidden">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="font-weight: normal;">Resultatenoverzicht</h3>
-            <button id="btn-reset" class="btn-reset">RESET SESSIE</button>
+            <h3 style="font-weight: normal;">Live Resultaten</h3>
+            <button id="btn-reset-action" class="btn-reset">RESET ALLE DATA</button>
         </div>
         <div id="monitor-list"></div>
     </div>
@@ -220,14 +209,13 @@
 
 <div id="factsheet-modal" class="modal-overlay hidden">
     <div class="modal-content">
-        <h2>Factsheet: Herken de Stijlfout</h2>
+        <h2 style="font-weight: normal;">Factsheet: Stijlfouten</h2>
         <div class="instruction-box">
-            <p><strong>Tautologie:</strong> Twee keer hetzelfde zeggen met verschillende woorden (synoniemen).<br><em>Bv: "Vast en zeker", "Enkel en alleen".</em></p>
-            <p><strong>Pleonasme:</strong> Een eigenschap benoemen die al in het woord zit.<br><em>Bv: "Witte sneeuw", "Mondelinge toespraak".</em></p>
-            <p><strong>Contaminatie:</strong> Twee woorden of uitdrukkingen door elkaar halen.<br><em>Bv: "Nachecken" (Nakijken + Checken).</em></p>
+            <p><strong>Tautologie:</strong> Twee verschillende woorden met dezelfde betekenis (synoniemen). <i>Bv: "Vast en zeker".</i></p>
+            <p><strong>Pleonasme:</strong> Een eigenschap benoemen die al in het hoofdwoord zit. <i>Bv: "Het witte papier".</i></p>
+            <p><strong>Contaminatie:</strong> Twee begrippen die tot een foute mix zijn gemaakt. <i>Bv: "Nachecken".</i></p>
         </div>
-        <p><strong>Het verschil:</strong> Bij een tautologie zijn beide woorden gelijkwaardig. Bij een pleonasme is het ene woord een overbodige toevoeging aan het andere.</p>
-        <button class="btn-oker" onclick="toggleModal(false)" style="margin-top: 1.5rem;">Terug naar de oefening</button>
+        <button class="btn-oker" onclick="toggleModal(false)">Sluiten</button>
     </div>
 </div>
 
@@ -273,7 +261,7 @@
     document.getElementById('btn-login').onclick = () => {
         user = document.getElementById('username').value.trim();
         klas = document.getElementById('class-select').value;
-        if(!user) return alert("Voer een naam in.");
+        if(!user) return alert("Naam verplicht.");
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('exercise-screen').classList.remove('hidden');
         initGame();
@@ -287,6 +275,7 @@
 
     function initGame() {
         const pool = document.getElementById('sentence-pool');
+        pool.innerHTML = "";
         const shuffled = [...data].sort(() => Math.random() - 0.5);
         shuffled.forEach((obj, i) => {
             const div = document.createElement('div');
@@ -301,9 +290,7 @@
     }
 
     window.handleDrop = (e, targetCat) => {
-        // Remove hover class from drop zone
         e.currentTarget.classList.remove('hover');
-        
         const id = e.dataTransfer.getData("text");
         const el = document.getElementById(id);
         if(!el) return;
@@ -313,12 +300,11 @@
             document.getElementById('score-display').innerText = score;
             e.currentTarget.appendChild(el);
             el.draggable = false;
-            el.style.background = "#d4edda";
-            el.style.borderColor = "#c3e6cb";
+            el.style.background = "#eefaf1";
             showThumb();
             set(ref(db, `stijlfouten/${klas}/${user}`), { score: score });
         } else {
-            alert("Niet correct. Bekijk de factsheet nog eens.");
+            alert("Niet correct. Probeer het opnieuw.");
         }
     };
 
@@ -334,14 +320,14 @@
             list.innerHTML = "";
             const all = snap.val() || {};
             for(let k in all) {
-                let html = `<div class="class-header-box"><span>Klas: ${k.toUpperCase()}</span></div>`;
+                let html = `<div class="class-header-box">Klas: ${k.toUpperCase()}</div>`;
                 for(let u in all[k]) {
                     const s = all[k][u].score;
                     const help = s < 14;
                     html += `<div class="result-card">
-                        <strong>${u}</strong>
-                        <span>${s}/20</span>
-                        <span style="color:${help ? '#cc0000':'#2ecc71'}; font-weight:normal; text-align:right;">${help ? 'Instructie' : '✅ OK'}</span>
+                        <span>${u}</span>
+                        <span style="text-align:center">${s}/20</span>
+                        <span style="color:${help ? 'red':'green'}; text-align:right;">${help ? 'Hulp nodig' : 'Voldoende'}</span>
                     </div>`;
                 }
                 list.innerHTML += html;
@@ -349,8 +335,10 @@
         });
     }
 
-    document.getElementById('btn-reset').onclick = () => {
-        if(confirm("Alles wissen?")) remove(ref(db, 'stijlfouten'));
+    document.getElementById('btn-reset-action').onclick = () => {
+        if(confirm("Weet je zeker dat je alle scores wilt wissen?")) {
+            remove(ref(db, 'stijlfouten'));
+        }
     };
 </script>
 </body>
