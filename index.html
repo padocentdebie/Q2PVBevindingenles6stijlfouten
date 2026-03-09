@@ -2,85 +2,232 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <title>Digibord: GGP Stijlfouten Race</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GGP Stijlfouten - Race & Training</title>
     <style>
-        :root { --police-blue: #1c2b4a; --police-gold: #f1c40f; --bg-dark: #101828; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: white; margin: 0; text-align: center; }
-        header { background: var(--police-blue); padding: 20px; border-bottom: 5px solid var(--police-gold); }
+        :root {
+            --police-blue: #1c2b4a;
+            --police-gold: #f1c40f;
+            --bg-gray: #f8fafc;
+            --bg-dark: #101828;
+            --text-dark: #1e293b;
+        }
+
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg-gray); color: var(--text-dark); }
+        .hidden { display: none !important; }
+        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; text-align: center; max-width: 500px; margin: 50px auto; }
+
+        /* --- DOCENT / DIGIBORD STIJL --- */
+        body.admin-mode { background: var(--bg-dark); color: white; }
         .race-track { width: 90%; max-width: 1000px; margin: 2rem auto; }
-        .lane { margin-bottom: 20px; text-align: left; }
-        .bar-container { background: #1f2937; height: 35px; border-radius: 20px; border: 2px solid #334155; overflow: hidden; position: relative; }
-        .bar { height: 100%; width: 0%; background: linear-gradient(90deg, #3b82f6, #10b981); transition: width 0.5s ease; }
-        .bar::after { content: '🚔'; position: absolute; right: -5px; top: 2px; font-size: 1.5rem; }
-        .btn-start { background: #10b981; color: white; padding: 20px 40px; font-size: 2rem; border-radius: 50px; cursor: pointer; border: none; margin-top: 20px; }
-        .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin: 2rem; }
-        .card { background: #2d3748; padding: 10px; border-radius: 5px; border-left: 4px solid var(--police-gold); }
+        .lane { margin-bottom: 25px; text-align: left; }
+        .progress-container { background: #1f2937; height: 40px; border-radius: 20px; border: 2px solid #334155; overflow: hidden; position: relative; }
+        .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #3b82f6, #10b981); transition: width 0.5s ease; position: relative; }
+        .progress-bar::after { content: '🚔'; position: absolute; right: 5px; top: 3px; font-size: 1.8rem; }
+
+        /* --- STUDENT STIJL --- */
+        .sentence-box { font-size: 1.4rem; min-height: 120px; display: flex; align-items: center; justify-content: center; margin: 20px 0; padding: 20px; background: #f1f5f9; border-radius: 8px; font-weight: 500; color: var(--text-dark); }
+        .btn-group { display: flex; flex-direction: column; gap: 12px; }
+        button.choice-btn { padding: 18px; font-size: 1.1rem; font-weight: 600; border-radius: 8px; border: 2px solid var(--police-blue); background: white; color: var(--police-blue); cursor: pointer; }
+        button.choice-btn:hover { background: var(--police-blue); color: white; }
+        
+        .btn-start { background: #10b981; color: white; padding: 20px 40px; font-size: 1.8rem; border-radius: 50px; border: none; cursor: pointer; font-weight: bold; }
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border-radius: 6px; border: 1px solid #ccc; box-sizing: border-box; }
     </style>
 </head>
 <body>
-    <header><h1>🚔 GGP STIJLFOUTEN RACE</h1></header>
-    
-    <div id="lobby">
-        <h2>Startopstelling (Live)</h2>
-        <div id="team-list" class="team-grid"></div>
-        <button id="start-btn" class="btn-start">START DE RACE!</button>
+
+<div id="login-screen" class="card">
+    <h1 style="color: var(--police-blue)">Opleiding GGP</h1>
+    <p>Voer je naam in om deel te nemen aan de race.</p>
+    <input type="text" id="player-name" placeholder="Voornaam">
+    <select id="class-select">
+        <option value="delta">Delta</option><option value="echo">Echo</option>
+        <option value="foxtrot">Foxtrot</option><option value="golf">Golf</option>
+        <option value="hotel">Hotel</option><option value="juliett">Juliett</option>
+    </select>
+    <button onclick="loginStudent()" style="background: var(--police-blue); color: white; padding: 15px; width: 100%; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Deelnemen</button>
+    <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+    <button onclick="loginDocent()" style="background: #64748b; color: white; padding: 10px; width: 100%; border: none; border-radius: 6px; cursor: pointer;">Openen als Docent (Digibord)</button>
+</div>
+
+<div id="student-view" class="hidden">
+    <div id="student-lobby" class="card">
+        <h2 id="match-msg">Wachten op partner...</h2>
+        <p>De race begint zodra de docent op start klikt.</p>
     </div>
-
-    <div id="race" class="hidden" style="display:none;">
-        <div id="lanes" class="race-track"></div>
+    <div id="student-game" class="card hidden">
+        <div style="display:flex; justify-content: space-between; font-size: 0.8rem; color: #666; margin-bottom: 10px;">
+            <span id="display-team">Team</span><span id="q-count">1/20</span>
+        </div>
+        <div id="current-sentence" class="sentence-box">Laden...</div>
+        <div class="btn-group">
+            <button class="choice-btn" onclick="checkAnswer('tautologie')">Tautologie</button>
+            <button class="choice-btn" onclick="checkAnswer('pleonasme')">Pleonasme</button>
+            <button class="choice-btn" onclick="checkAnswer('contaminatie')">Contaminatie</button>
+        </div>
     </div>
+</div>
 
-    <audio id="snd-start" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
-    <audio id="snd-loop" src="https://assets.mixkit.co/active_storage/free_stock_music/preview/mixkit-uplifting-economy-620.mp3" loop></audio>
+<div id="docent-view" class="hidden" style="text-align: center; padding: 20px;">
+    <h1 style="color: var(--police-gold); letter-spacing: 2px;">🚔 GGP RACE CONTROL</h1>
+    <div id="docent-lobby">
+        <div id="team-list" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px;"></div>
+        <button class="btn-start" onclick="startRace()">START DE RACE!</button>
+        <p><button onclick="resetDb()" style="background:none; color: #ef4444; border:none; cursor:pointer;">Reset alle data</button></p>
+    </div>
+    <div id="docent-race" class="hidden">
+        <h2 id="winner-display">RACE BEZIG...</h2>
+        <div id="lanes-container" class="race-track"></div>
+    </div>
+</div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
-        import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
+<audio id="snd-start" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
+<audio id="snd-loop" src="https://assets.mixkit.co/active_storage/free_stock_music/preview/mixkit-uplifting-economy-620.mp3" loop></audio>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyC-Of0AUOd-kVo2RKxYc-68Gr-RO4HdRk0",
-            authDomain: "q2aangifteles2.firebaseapp.com",
-            databaseURL: "https://q2aangifteles2-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "q2aangifteles2",
-        };
-        const db = getDatabase(initializeApp(firebaseConfig));
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+    import { getDatabase, ref, set, onValue, push, remove, update } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
 
-        onValue(ref(db, 'presence'), (snap) => {
-            const list = document.getElementById('team-list');
-            list.innerHTML = "";
-            if(snap.val()) Object.values(snap.val()).forEach(s => {
-                list.innerHTML += `<div class="card">${s.name}<br><small>${s.klas}</small></div>`;
-            });
+    const firebaseConfig = {
+        apiKey: "AIzaSyC-Of0AUOd-kVo2RKxYc-68Gr-RO4HdRk0",
+        authDomain: "q2aangifteles2.firebaseapp.com",
+        databaseURL: "https://q2aangifteles2-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "q2aangifteles2",
+    };
+    const db = getDatabase(initializeApp(firebaseConfig));
+
+    const questions = [
+        { t: "De wet is duidelijk en helder.", c: "tautologie" },
+        { t: "De Officier van Justitie eiste een straf voor altijd en eeuwig.", c: "tautologie" },
+        { t: "De rechter gaf een mondelinge toespraak tot de jury.", c: "pleonasme" },
+        { t: "De politieagent telefoneerde de verdachte op.", c: "contaminatie" },
+        { t: "De getuige vertelde alles open en bloot.", c: "tautologie" },
+        { t: "De gevangene bekende zijn criminele misdaden.", c: "pleonasme" },
+        { t: "De verdachte leek zich niet te beseffen van de ernst.", c: "contaminatie" },
+        { t: "Het alibi checkte de rechercheur na.", c: "contaminatie" },
+        { t: "Witte sneeuw op de plaats delict.", c: "pleonasme" },
+        { t: "De Officier van Justitie eiste een zware maximumstraf.", c: "pleonasme" },
+        { t: "Hij is vast en zeker de dader.", c: "tautologie" },
+        { t: "De rechercheurs testten de wapens uit.", c: "contaminatie" },
+        { t: "Met eigen ogen zag de getuige het misdrijf gebeuren.", c: "pleonasme" },
+        { t: "De advocaat zijnde, eiste hij vrijspraak.", c: "contaminatie" },
+        { t: "Enkel en alleen de waarheid spreken.", c: "tautologie" },
+        { t: "Een schriftelijk document van beroep.", c: "pleonasme" },
+        { t: "De verdachte telefoneerde zijn advocaat op.", c: "contaminatie" },
+        { t: "De rechter oordeelde kalm en bedaard.", c: "tautologie" },
+        { t: "De gevangeniscel zat stevig op slot.", c: "pleonasme" },
+        { t: "De rechter sprak eerlijk en oprecht.", c: "tautologie" }
+    ];
+
+    let myName = "", myKlas = "", myPartner = "Solo", battlePath = "", isDocent = false;
+
+    // LOGIN LOGICA
+    window.loginDocent = () => {
+        isDocent = true;
+        document.body.classList.add('admin-mode');
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('docent-view').classList.remove('hidden');
+        initDocentMonitor();
+    };
+
+    window.loginStudent = () => {
+        myName = document.getElementById('player-name').value.trim();
+        myKlas = document.getElementById('class-select').value;
+        if(!myName) return alert("Naam?");
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('student-view').classList.remove('hidden');
+        
+        push(ref(db, 'presence'), { name: myName, klas: myKlas });
+        const waitRef = ref(db, `waiting_room/${myKlas}`);
+        onValue(waitRef, (snap) => {
+            const list = snap.val();
+            if(list && !battlePath) {
+                const partnerKey = Object.keys(list).find(k => list[k] !== myName);
+                if(partnerKey) {
+                    myPartner = list[partnerKey];
+                    document.getElementById('match-msg').innerText = `Gekoppeld aan: ${myPartner}`;
+                    remove(ref(db, `waiting_room/${myKlas}/${partnerKey}`));
+                    initSync();
+                }
+            } else if (!battlePath) { set(push(waitRef), myName); }
         });
+    };
 
-        document.getElementById('start-btn').onclick = () => {
-            set(ref(db, 'game_state'), { status: 'STARTED', winner: null });
-            document.getElementById('snd-start').play();
-            document.getElementById('snd-loop').play();
-            document.getElementById('lobby').style.display = 'none';
-            document.getElementById('race').style.display = 'block';
-        };
-
+    // DOCENT FUNCTIES
+    function initDocentMonitor() {
         onValue(ref(db, 'scores'), (snap) => {
-            const lanes = document.getElementById('lanes');
-            lanes.innerHTML = "";
+            const data = snap.val();
+            const list = document.getElementById('team-list');
+            const lanes = document.getElementById('lanes-container');
+            if(!data) return;
+            let teams = [];
+            for(let k in data) for(let t in data[k]) teams.push({ ...data[k][t], klas: k });
+            
+            list.innerHTML = teams.map(t => `<div style="background:#2d3748; padding:10px; border-radius:5px;">${t.name}</div>`).join('');
+            teams.sort((a,b) => b.score - a.score);
+            lanes.innerHTML = teams.map(t => `
+                <div class="lane">
+                    <div style="display:flex; justify-content:space-between"><span>${t.name}</span><span>${t.score}/20</span></div>
+                    <div class="progress-container"><div class="progress-bar" style="width:${(t.score/20)*100}%"></div></div>
+                </div>`).join('');
+        });
+    }
+
+    window.startRace = () => set(ref(db, 'game_state'), { status: 'STARTED' });
+    window.resetDb = () => { if(confirm("Alles wissen?")) { ['game_state','waiting_room','scores','presence','battles'].forEach(p => remove(ref(db,p))); location.reload(); }};
+
+    // STUDENT FUNCTIES
+    function initSync() {
+        const duoId = [myName, myPartner].sort().join("_");
+        battlePath = `battles/${myKlas}/${duoId}`;
+        onValue(ref(db, battlePath), (snap) => {
             const data = snap.val();
             if(data) {
-                let teams = [];
-                for(let k in data) for(let t in data[k]) teams.push(data[k][t]);
-                teams.sort((a,b) => b.score - a.score).forEach(team => {
-                    const p = (team.score / 20) * 100;
-                    lanes.innerHTML += `<div class="lane"><div>${team.name}</div><div class="bar-container"><div class="bar" style="width:${p}%"></div></div></div>`;
-                });
-            }
+                document.getElementById('current-sentence').innerText = questions[data.idx]?.t || "Klaar!";
+                document.getElementById('q-count').innerText = `${data.idx + 1}/20`;
+            } else { set(ref(db, battlePath), { idx: 0, score: 0 }); }
         });
+    }
 
-        onValue(ref(db, 'game_state'), (snap) => {
-            if(snap.val()?.winner) {
-                document.getElementById('snd-loop').pause();
-                alert("FINISH! Winnaar: " + snap.val().winner);
+    window.checkAnswer = (choice) => {
+        onValue(ref(db, battlePath), (snap) => {
+            const data = snap.val();
+            if(data && data.idx < questions.length) {
+                if(choice === questions[data.idx].c) {
+                    const next = data.idx + 1;
+                    update(ref(db, battlePath), { idx: next, score: next });
+                    set(ref(db, `scores/${myKlas}/${myName}_${myPartner}`), { name: myPartner === "Solo" ? myName : `${myName} & ${myPartner}`, score: next });
+                    if(next >= 20) update(ref(db, 'game_state'), { winner: myPartner === "Solo" ? myName : `${myName} & ${myPartner}` });
+                } else { alert("Fout! Overleg!"); }
             }
-        });
-    </script>
+        }, { onlyOnce: true });
+    };
+
+    // GAME STATE (Voor beide)
+    onValue(ref(db, 'game_state'), (snap) => {
+        const s = snap.val();
+        if(s?.status === 'STARTED') {
+            if(!isDocent) {
+                document.getElementById('student-lobby').classList.add('hidden');
+                document.getElementById('student-game').classList.remove('hidden');
+                if(!battlePath) initSync();
+            } else {
+                document.getElementById('docent-lobby').classList.add('hidden');
+                document.getElementById('docent-race').classList.remove('hidden');
+                document.getElementById('snd-start').play(); document.getElementById('snd-loop').play();
+            }
+        }
+        if(s?.winner) {
+            document.getElementById('winner-display').innerText = "FINISH! WINNAAR: " + s.winner;
+            document.getElementById('snd-loop').pause();
+            if(!isDocent) {
+                document.getElementById('student-game').classList.add('hidden');
+                document.getElementById('student-lobby').innerHTML = "<h1>🏁 Gefinisht!</h1>";
+                document.getElementById('student-lobby').classList.remove('hidden');
+            }
+        }
+    });
+</script>
 </body>
 </html>
