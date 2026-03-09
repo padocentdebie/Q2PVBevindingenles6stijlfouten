@@ -3,109 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stijlfouten Training - Competitie</title>
+    <title>Stijlfouten Training - Opleiding GGP</title>
     <style>
         :root {
             --police-blue: #1c2b4a;
-            --bg-gray: #f9f9f9;
-            --border-gray: #dddddd;
+            --bg-gray: #f4f7f9;
             --soft-oker: #d8c090;
-            --text-blue: #101c33;
-            --correct-green: #2ecc71;
-            --bronze: #cd7f32;
-            --silver: #c0c0c0;
-            --gold: #ffd700;
+            --correct-green: #27ae60;
+            --alert-red: #c0392b;
         }
 
-        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--bg-gray); color: var(--text-blue); margin: 0; display: flex; flex-direction: column; align-items: center; }
-        header { background: #ffffff; color: var(--police-blue); width: 100%; padding: 1.5rem 0; text-align: center; border-bottom: 2px solid var(--border-gray); }
-        .container { width: 95%; max-width: 900px; margin: 2rem 0; background: white; padding: 2.5rem; border-radius: 4px; border: 1px solid var(--border-gray); }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg-gray); margin: 0; display: flex; flex-direction: column; align-items: center; }
+        header { background: white; width: 100%; padding: 1.5rem 0; text-align: center; border-bottom: 4px solid var(--police-blue); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .container { width: 90%; max-width: 850px; margin: 2rem; background: white; padding: 2rem; border-radius: 8px; border: 1px solid #ddd; }
         .hidden { display: none !important; }
 
-        /* Leaderboard Styles */
-        .leaderboard-section { background: #f1f3f5; padding: 1.5rem; border-radius: 8px; margin-top: 2rem; }
-        .class-rank-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #ddd; align-items: center; }
-        .top-performer { background: white; border-radius: 4px; padding: 8px; margin-bottom: 5px; border-left: 4px solid var(--soft-oker); }
-
-        /* Focus Modus: Eén zin tegelijk */
-        .sentence-pool-focus { margin: 2rem 0; height: 120px; display: flex; justify-content: center; align-items: center; background: #f8f9fa; border-radius: 8px; border: 2px dashed var(--border-gray); }
-        .draggable-sentence { background: white; padding: 20px 30px; border: 2px solid var(--police-blue); border-radius: 4px; cursor: grab; font-size: 1.1rem; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-
-        /* Drop Zones */
-        .drop-zones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-        .drop-zone { min-height: 120px; border: 1px solid var(--border-gray); border-radius: 4px; padding: 1rem; background: #ffffff; text-align: center; }
-        .drop-zone h3 { font-size: 0.9rem; color: var(--police-blue); margin-top: 0; }
-
-        /* UI */
-        button, select, input { padding: 10px; border: 1px solid var(--border-gray); border-radius: 4px; margin: 5px 0; }
-        button { background: var(--police-blue); color: white; cursor: pointer; border: none; font-weight: bold; width: 100%; }
-        .btn-oker { background: var(--soft-oker); color: #403010; width: auto; font-weight: normal; }
+        /* Status Panels */
+        .battle-header { display: flex; justify-content: space-between; background: var(--police-blue); color: white; padding: 1.2rem; border-radius: 8px; margin-bottom: 1.5rem; }
+        .sentence-box { min-height: 140px; display: flex; justify-content: center; align-items: center; background: #fff; border: 2px solid var(--police-blue); border-radius: 8px; margin: 1.5rem 0; font-size: 1.25rem; padding: 25px; text-align: center; }
         
-        #thumb-animation { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); font-size: 100px; z-index: 4000; transition: transform 0.4s; }
-        #thumb-animation.show { transform: translate(-50%, -50%) scale(1.5); }
+        /* Drop Zones / Buttons */
+        .drop-zones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .drop-zone { min-height: 100px; border: 2px solid #cfd8dc; border-radius: 8px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; background: white; display: flex; align-items: center; justify-content: center; }
+        .drop-zone:hover { border-color: var(--police-blue); background: #f0f4f8; }
+        .drop-zone h3 { margin: 0; font-size: 1rem; color: var(--police-blue); }
+
+        /* Tables */
+        .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
+        .leaderboard-table th, .leaderboard-table td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        .winner-row { background: #e8f5e9; font-weight: bold; }
+
+        button, select, input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem; }
+        button { background: var(--police-blue); color: white; border: none; font-weight: bold; cursor: pointer; }
+        .btn-start { background: var(--correct-green); font-size: 1.3rem; }
     </style>
 </head>
 <body>
 
-<header><h1>Stijlfouten Training - Opleiding GGP</h1></header>
+<header>
+    <h1>Stijlfouten Training - Opleiding GGP</h1>
+</header>
 
 <div class="container">
-    <div id="login-screen">
-        <div style="text-align: right;"><button class="btn-oker" onclick="toggleModal(true)">📖 Theorie</button></div>
-        <input type="text" id="username" placeholder="Voornaam">
+    <div id="setup-screen">
+        <p>Voer je naam in en kies je klas. Het systeem koppelt je automatisch aan een partner.</p>
+        <input type="text" id="player-name" placeholder="Voornaam">
         <select id="class-select">
             <option value="delta">Delta</option><option value="echo">Echo</option>
             <option value="foxtrot">Foxtrot</option><option value="golf">Golf</option>
             <option value="hotel">Hotel</option><option value="juliett">Juliett</option>
-            <option value="lima">Lima</option><option value="mike">Mike</option>
         </select>
-        <button id="btn-login" style="margin-top:10px;">Start Training</button>
-        
-        <div class="leaderboard-section">
-            <h3 style="margin-top:0; font-weight: normal; color: var(--police-blue);">🏆 Klassenklassement (Gemiddelde Score)</h3>
-            <div id="class-leaderboard">Laden...</div>
-        </div>
-        <button id="btn-monitor-mode" style="background:none; color:gray; font-size:0.75rem; border:none; margin-top:20px;">Docenten Dashboard</button>
+        <button id="btn-match">Inloggen & Wachten</button>
+        <button onclick="showDocentDashboard()" style="background:#607d8b; margin-top: 2rem;">Docenten Dashboard</button>
     </div>
 
-    <div id="exercise-screen" class="hidden">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-            <span>Zin <strong id="current-count">1</strong> / 20</span>
-            <span>Jouw Score: <strong id="score-display">0</strong></span>
+    <div id="lobby-screen" class="hidden" style="text-align: center;">
+        <div style="padding: 2rem; background: #fff9e6; border: 2px dashed var(--soft-oker); border-radius: 8px;">
+            <h2 id="match-msg">Wachten op koppeling...</h2>
+            <p>Zodra de docent op 'START' klikt, begint de oefening voor iedereen.</p>
         </div>
-        <div id="sentence-pool" class="sentence-pool-focus"></div>
+    </div>
+
+    <div id="docent-screen" class="hidden">
+        <h2>Docenten Dashboard</h2>
+        <p>Geregistreerde studenten: <strong id="student-count">0</strong></p>
+        <button id="btn-trigger-start" class="btn-start">🚀 START DE TRAINING</button>
+        <button onclick="resetEverything()" style="background: var(--alert-red); margin-top: 1rem;">Reset Alles</button>
+        <button onclick="location.reload()" style="background:#999;">Terug</button>
+    </div>
+
+    <div id="game-screen" class="hidden">
+        <div class="battle-header">
+            <div id="display-team">Duo: -</div>
+            <div>Vraag: <span id="q-count">1</span>/20</div>
+            <div>Score: <span id="score-display">0</span></div>
+        </div>
+        <div id="current-sentence" class="sentence-box">Laden...</div>
         <div class="drop-zones">
-            <div class="drop-zone" id="tautologie" ondragover="event.preventDefault()" ondrop="handleDrop(event, 'tautologie')"><h3>Tautologie</h3><div class="dropped-list"></div></div>
-            <div class="drop-zone" id="pleonasme" ondragover="event.preventDefault()" ondrop="handleDrop(event, 'pleonasme')"><h3>Pleonasme</h3><div class="dropped-list"></div></div>
-            <div class="drop-zone" id="contaminatie" ondragover="event.preventDefault()" ondrop="handleDrop(event, 'contaminatie')"><h3>Contaminatie</h3><div class="dropped-list"></div></div>
+            <div class="drop-zone" onclick="checkAnswer('tautologie')"><h3>Tautologie</h3></div>
+            <div class="drop-zone" onclick="checkAnswer('pleonasme')"><h3>Pleonasme</h3></div>
+            <div class="drop-zone" onclick="checkAnswer('contaminatie')"><h3>Contaminatie</h3></div>
         </div>
     </div>
 
-    <div id="monitor-screen" class="hidden">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-            <h2>Docenten Monitor</h2>
-            <button onclick="location.reload()" style="width:auto; padding:5px 15px;">Terug</button>
-        </div>
-        <button id="btn-reset-db" style="background:var(--alert-red); margin-bottom: 1rem;">RESET ALLE DATA</button>
-        <div id="monitor-list"></div>
+    <div id="finish-screen" class="hidden">
+        <h2 style="text-align: center;">Resultaten</h2>
+        <table class="leaderboard-table">
+            <thead>
+                <tr><th>Pos</th><th>Team/Speler</th><th>Klas</th><th>Score</th><th>Status</th></tr>
+            </thead>
+            <tbody id="leaderboard-body"></tbody>
+        </table>
+        <button onclick="location.reload()" style="margin-top: 2rem;">Terug naar Start</button>
     </div>
 </div>
-
-<div id="factsheet-modal" class="modal-overlay hidden">
-    <div class="modal-content">
-        <h2 style="font-weight: normal;">Factsheet Stijlfouten</h2>
-        <p><b>Tautologie:</b> Twee synoniemen. (<i>Bv: "Vast en zeker"</i>)</p>
-        <p><b>Pleonasme:</b> Eigenschap benoemen. (<i>Bv: "Witte sneeuw"</i>)</p>
-        <p><b>Contaminatie:</b> Foute mix. (<i>Bv: "Nachecken"</i>)</p>
-        <button class="btn-oker" onclick="toggleModal(false)" style="width:100%;">Sluiten</button>
-    </div>
-</div>
-
-<div id="thumb-animation">👍</div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
-    import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
+    import { getDatabase, ref, set, onValue, push, remove, update } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyC-Of0AUOd-kVo2RKxYc-68Gr-RO4HdRk0",
@@ -120,113 +115,135 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    const fullData = [
-        { t: "De wet is duidelijk en helder.", c: "tautologie" }, { t: "De rechter oordeelde kalm en bedaard.", c: "tautologie" },
-        { t: "De getuige vertelde alles open en bloot.", c: "tautologie" }, { t: "De officier van justitie eiste een straf voor altijd en eeuwig.", c: "tautologie" },
-        { t: "De rechter sprak het vonnis eerlijk en oprecht uit.", c: "tautologie" }, { t: "De advocaat probeerde de jury te overtuigen met woorden en taal.", c: "tautologie" },
-        { t: "De rechter gaf een mondelinge toespraak tot de jury.", c: "pleonasme" }, { t: "De advocaat pleitte met woorden voor de onschuld van zijn cliënt.", c: "pleonasme" },
-        { t: "De wet voorziet in een schriftelijk document van beroep.", c: "pleonasme" }, { t: "De gevangene bekende zijn criminele misdaden.", c: "pleonasme" },
-        { t: "De getuige zag met eigen ogen het misdrijf gebeuren.", c: "pleonasme" }, { t: "De officier van justitie eiste een zware maximumstraf.", c: "pleonasme" },
-        { t: "De gevangene zat achter de tralies in een gevangeniscel.", c: "pleonasme" }, { t: "De rechter sprak de verdachte streng toe en zijn advocaat ook.", c: "contaminatie" },
-        { t: "De politieagent telefoneerde de verdachte op.", c: "contaminatie" }, { t: "De verdachte leek zich niet te beseffen van de ernst van zijn daden.", c: "contaminatie" },
-        { t: "Er circuleren geruchten rond over corruptie binnen het bureau.", c: "contaminatie" }, { t: "De rechercheur checkte de alibi's van de verdachte na.", c: "contaminatie" },
-        { t: "De politie testte de nieuwe wapens uit.", c: "contaminatie" }, { t: "Als advocaat zijnde, eis ik vrijspraak.", c: "contaminatie" }
+    const questions = [
+        { t: "De wet is duidelijk en helder.", c: "tautologie" },
+        { t: "De Officier van Justitie eiste een straf voor altijd en eeuwig.", c: "tautologie" },
+        { t: "De rechter gaf een mondelinge toespraak tot de jury.", c: "pleonasme" },
+        { t: "De politieagent telefoneerde de verdachte op.", c: "contaminatie" },
+        { t: "De getuige vertelde alles open en bloot.", c: "tautologie" },
+        { t: "De gevangene bekende zijn criminele misdaden.", c: "pleonasme" },
+        { t: "De verdachte leek zich niet te beseffen van de ernst.", c: "contaminatie" },
+        { t: "Het alibi checkte de rechercheur na.", c: "contaminatie" },
+        { t: "Witte sneeuw op de plaats delict.", c: "pleonasme" },
+        { t: "De Officier van Justitie eiste een zware maximumstraf.", c: "pleonasme" },
+        { t: "Hij is vast en zeker de dader.", c: "tautologie" },
+        { t: "De rechercheurs testten de wapens uit.", c: "contaminatie" },
+        { t: "Met eigen ogen zag de getuige het misdrijf gebeuren.", c: "pleonasme" },
+        { t: "De advocaat zijnde, eiste hij vrijspraak.", c: "contaminatie" },
+        { t: "Enkel en alleen de waarheid spreken.", c: "tautologie" },
+        { t: "Een schriftelijk document van beroep.", c: "pleonasme" },
+        { t: "De verdachte telefoneerde zijn advocaat op.", c: "contaminatie" },
+        { t: "De rechter oordeelde kalm en bedaard.", c: "tautologie" },
+        { t: "De gevangeniscel zat stevig op slot.", c: "pleonasme" },
+        { t: "De rechter sprak eerlijk en oprecht.", c: "tautologie" }
     ];
 
-    let user = "", klas = "", score = 0, currentIdx = 0, shuffled = [];
+    let myName = "", myKlas = "", myPartner = "Solo", score = 0, currentIdx = 0, battlePath = "";
 
-    window.toggleModal = (s) => document.getElementById('factsheet-modal').classList.toggle('hidden', !s);
-
-    // LIVE LEADERBOARD BIJ INLOGGEN
-    onValue(ref(db, 'stijlfouten'), (snap) => {
-        const all = snap.val() || {};
-        const classScores = [];
-        for(let k in all) {
-            let total = 0, count = 0;
-            for(let u in all[k]) { total += all[k][u].score; count++; }
-            classScores.push({ name: k, avg: (total/count).toFixed(1) });
-        }
-        classScores.sort((a, b) => b.avg - a.avg);
-        const list = document.getElementById('class-leaderboard');
-        list.innerHTML = classScores.map((c, i) => `
-            <div class="class-rank-item">
-                <span>${i+1}. Klas ${c.name.toUpperCase()}</span>
-                <strong>${c.avg} pnt</strong>
-            </div>
-        `).join('') || "Nog geen data beschikbaar.";
-    });
-
-    document.getElementById('btn-login').onclick = () => {
-        user = document.getElementById('username').value.trim();
-        klas = document.getElementById('class-select').value;
-        if(!user) return alert("Naam?");
-        document.getElementById('login-screen').classList.add('hidden');
-        document.getElementById('exercise-screen').classList.remove('hidden');
-        shuffled = [...fullData].sort(() => Math.random() - 0.5);
-        showNextSentence();
+    // --- DOCENT ---
+    window.showDocentDashboard = () => {
+        document.getElementById('setup-screen').classList.add('hidden');
+        document.getElementById('docent-screen').classList.remove('hidden');
+        onValue(ref(db, 'presence'), (snap) => {
+            document.getElementById('student-count').innerText = snap.val() ? Object.keys(snap.val()).length : 0;
+        });
     };
 
-    document.getElementById('btn-monitor-mode').onclick = () => {
-        document.getElementById('login-screen').classList.add('hidden');
-        document.getElementById('monitor-screen').classList.remove('hidden');
-        initMonitor();
+    document.getElementById('btn-trigger-start').onclick = () => {
+        set(ref(db, 'game_state'), { status: 'STARTED', winner: null });
     };
 
-    function showNextSentence() {
-        const pool = document.getElementById('sentence-pool');
-        pool.innerHTML = "";
-        if(currentIdx < shuffled.length) {
-            document.getElementById('current-count').innerText = currentIdx + 1;
-            const obj = shuffled[currentIdx];
-            const div = document.createElement('div');
-            div.className = 'draggable-sentence';
-            div.draggable = true;
-            div.innerText = obj.t;
-            div.ondragstart = (e) => e.dataTransfer.setData("text", obj.c);
-            pool.appendChild(div);
-        } else {
-            pool.innerHTML = "<h3>✓ Voltooid!</h3>";
-        }
-    }
-
-    window.handleDrop = (e, targetCat) => {
-        const correctCat = e.dataTransfer.getData("text");
-        if(correctCat === targetCat) {
-            score++;
-            document.getElementById('score-display').innerText = score;
-            showThumb();
-            set(ref(db, `stijlfouten/${klas}/${user}`), { score: score });
-            currentIdx++;
-            setTimeout(showNextSentence, 400);
-        } else {
-            alert("Fout!");
+    window.resetEverything = () => {
+        if(confirm("Alles resetten?")) {
+            remove(ref(db, 'game_state')); remove(ref(db, 'waiting_room')); 
+            remove(ref(db, 'scores')); remove(ref(db, 'presence')); remove(ref(db, 'battles'));
+            location.reload();
         }
     };
 
-    function showThumb() {
-        const t = document.getElementById('thumb-animation');
-        t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 600);
-    }
+    // --- STUDENT ---
+    document.getElementById('btn-match').onclick = () => {
+        myName = document.getElementById('player-name').value.trim();
+        myKlas = document.getElementById('class-select').value;
+        if(!myName) return alert("Naam invullen.");
 
-    function initMonitor() {
-        onValue(ref(db, 'stijlfouten'), (snap) => {
-            const list = document.getElementById('monitor-list');
-            list.innerHTML = "";
-            const all = snap.val() || {};
-            for(let k in all) {
-                let html = `<div style="background:#eee; padding:5px; margin-top:10px;"><b>Klas: ${k.toUpperCase()}</b></div>`;
-                for(let u in all[k]) {
-                    html += `<div style="padding:5px; border-bottom:1px solid #ddd; display:flex; justify-content:space-between;">
-                        <span>${u}</span><span>${all[k][u].score}/20</span>
-                    </div>`;
+        document.getElementById('setup-screen').classList.add('hidden');
+        document.getElementById('lobby-screen').classList.remove('hidden');
+
+        push(ref(db, 'presence'), { name: myName, klas: myKlas });
+        
+        const waitRef = ref(db, `waiting_room/${myKlas}`);
+        onValue(waitRef, (snap) => {
+            const list = snap.val();
+            if(list) {
+                const partnerKey = Object.keys(list).find(k => list[k] !== myName);
+                if(partnerKey) {
+                    myPartner = list[partnerKey];
+                    document.getElementById('match-msg').innerText = `Gekoppeld aan: ${myPartner}`;
+                    remove(ref(db, `waiting_room/${myKlas}/${partnerKey}`));
+                    initSync();
                 }
-                list.innerHTML += html;
-            }
+            } else { set(push(waitRef), myName); }
+        });
+
+        onValue(ref(db, 'game_state'), (snap) => {
+            const state = snap.val();
+            if(state && state.status === 'STARTED' && !battlePath) initSync(); // Voor de solo-spelers
+            if(state && state.status === 'STARTED') startGame();
+            if(state && state.winner) endGame();
+        });
+    };
+
+    function initSync() {
+        const duoId = [myName, myPartner].sort().join("_");
+        battlePath = `battles/${myKlas}/${duoId}`;
+        onValue(ref(db, battlePath), (snap) => {
+            const data = snap.val();
+            if(data) {
+                currentIdx = data.idx; score = data.score;
+                document.getElementById('score-display').innerText = score;
+                document.getElementById('q-count').innerText = currentIdx + 1;
+                updateSentence();
+            } else { set(ref(db, battlePath), { idx: 0, score: 0 }); }
         });
     }
 
-    document.getElementById('btn-reset-db').onclick = () => { if(confirm("Data wissen?")) remove(ref(db, 'stijlfouten')); };
+    function startGame() {
+        document.getElementById('lobby-screen').classList.add('hidden');
+        document.getElementById('game-screen').classList.remove('hidden');
+        document.getElementById('display-team').innerText = myPartner === "Solo" ? myName : `${myName} & ${myPartner}`;
+    }
+
+    function updateSentence() {
+        if(currentIdx < questions.length) {
+            document.getElementById('current-sentence').innerText = questions[currentIdx].t;
+        } else {
+            update(ref(db, 'game_state'), { winner: `${myName} & ${myPartner}` });
+        }
+    }
+
+    window.checkAnswer = (choice) => {
+        if(choice === questions[currentIdx].c) {
+            update(ref(db, battlePath), { idx: currentIdx + 1, score: score + 1 });
+            // Ook opslaan voor leaderboard
+            set(ref(db, `scores/${myKlas}/${myName}_${myPartner}`), { name: `${myName} & ${myPartner}`, score: score + 1 });
+        } else { alert("Fout! Overleg samen."); }
+    };
+
+    function endGame() {
+        document.getElementById('game-screen').classList.add('hidden');
+        document.getElementById('finish-screen').classList.remove('hidden');
+        onValue(ref(db, 'scores'), (snap) => {
+            const all = snap.val();
+            const listBody = document.getElementById('leaderboard-body');
+            listBody.innerHTML = "";
+            let flat = [];
+            for(let k in all) for(let tId in all[k]) flat.push({ n: all[k][tId].name, s: all[k][tId].score, k: k });
+            flat.sort((a,b) => b.s - a.s).forEach((t, i) => {
+                listBody.innerHTML += `<tr class="${t.s>=20?'winner-row':''}"><td>${i+1}</td><td>${t.n}</td><td>${t.k.toUpperCase()}</td><td>${t.s}/20</td><td>${t.s>=20?'🏁':'⌛'}</td></tr>`;
+            });
+        });
+    }
 </script>
 </body>
 </html>
