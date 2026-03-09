@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Politie Academie - Stijlfouten Training</title>
+    <style>
+        :root {
+            --police-blue: #1c2b4a;
+            --police-gold: #c5a059;
+            --bg-gray: #f4f4f4;
+            --correct-green: #2ecc71;
+            --alert-red: #cc0000;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: var(--bg-gray);
+            color: var(--police-blue);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            background: var(--police-blue);
+            color: white;
+            width: 100%;
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 4px solid var(--police-gold);
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1100px;
+            margin: 2rem 0;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .hidden { display: none; }
+
+        /* Instructieblok op HAVO-niveau */
+        .instruction-box {
+            background: #fff9c4;
+            border-left: 5px solid #fbc02d;
+            padding: 20px;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        /* Drag & Drop Areas */
+        .drop-zones {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .drop-zone {
+            min-height: 250px;
+            border: 2px dashed var(--police-blue);
+            border-radius: 8px;
+            padding: 10px;
+            background: #f9f9f9;
+            transition: background 0.3s;
+        }
+
+        .drop-zone h3 { text-align: center; margin-top: 0; color: var(--police-gold); text-transform: uppercase; font-size: 1rem; }
+
+        /* Sentence pool */
+        .sentence-pool {
+            margin: 20px 0;
+            min-height: 120px;
+            padding: 20px;
+            background: #eef2f7;
+            border-radius: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .draggable-sentence {
+            background: white;
+            padding: 12px 18px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: grab;
+            font-size: 0.9rem;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+            max-width: 320px;
+        }
+
+        /* Dashboard & Monitor */
+        .result-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 8px;
+            display: grid;
+            grid-template-columns: 1fr 120px 180px;
+            align-items: center;
+            border-radius: 4px;
+        }
+        .class-header-box {
+            background: var(--police-blue);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-top: 25px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .status-help { color: var(--alert-red); font-weight: bold; }
+        .status-ok { color: var(--correct-green); font-weight: bold; }
+
+        /* Buttons & UI */
+        button, select, input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        button { background: var(--police-blue); color: white; cursor: pointer; border: none; font-weight: bold; }
+        .btn-reset { background: var(--alert-red); margin-top: 40px; width: auto; padding: 10px 20px; }
+        .btn-uitleg { background: #607d8b; width: auto; padding: 8px 15px; font-size: 0.8rem; margin-bottom: 10px; }
+
+        #thumb-animation {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 120px;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+            z-index: 1000;
+        }
+        #thumb-animation.show { transform: translate(-50%, -50%) scale(1.5); }
+        
+        /* Modal for explanation */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 2000;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Taalbeheersing: Stijlfouten Categoriseren</h1>
+</header>
+
+<div class="container">
+    <div id="login-screen">
+        <div class="instruction-box">
+            <h3>Instructie: Herken de Stijlfout</h3>
+            <p>In processen-verbaal is nauwkeurigheid essentieel. We maken vaak drie soorten "dubbelop"-fouten:</p>
+            <ul>
+                <li><strong>Tautologie:</strong> Twee verschillende woorden die exact hetzelfde betekenen (bv. <i>"vast en zeker"</i>). Twee keer hetzelfde.</li>
+                <li><strong>Pleonasme:</strong> Een eigenschap benoemen die al in het woord zit (bv. <i>"witte sneeuw"</i>). Een overbodige toevoeging.</li>
+                <li><strong>Contaminatie:</strong> Twee goede begrippen verhaspelen tot een nieuwe fout (bv. <i>"nachecken"</i> is een mix van <i>nakijken</i> en <i>checken</i>).</li>
+            </ul>
+        </div>
+        <input type="text" id="username" placeholder="Voornaam">
+        <select id="class-select">
+            <option value="delta">Delta</option>
+            <option value="echo">Echo</option>
+            <option value="foxtrot">Foxtrot</option>
+            <option value="golf">Golf</option>
+            <option value="hotel">Hotel</option>
+            <option value="juliett">Juliett</option>
+            <option value="lima">Lima</option>
+            <option value="mike">Mike</option>
+        </select>
+        <button id="btn-login">Start Training</button>
+        <button id="btn-monitor-mode" style="background:none; color: gray; font-size: 0.8rem;">Monitor Dashboard (Docent)</button>
+    </div>
+
+    <div id="exercise-screen" class="hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <button class="btn-uitleg" onclick="document.getElementById('uitleg-modal').classList.remove('hidden')">Hulp nodig? (Theorie)</button>
+            <strong>Score: <span id="score-display">0</span> / 20</strong>
+        </div>
+        
+        <div id="sentence-pool" class="sentence-pool"></div>
+
+        <div class="drop-zones">
+            <div class="drop-zone" id="tautologie" ondragover="event.preventDefault()" ondrop="handleDrop(event, 'tautologie')">
+                <h3>Tautologie</h3>
+            </div>
+            <div class="drop-zone" id="pleonasme" ondragover="event.preventDefault()" ondrop="handleDrop(event, 'pleonasme')">
+                <h3>Pleonasme</h3>
+            </div>
+            <div class="drop-zone" id="contaminatie" ondragover="event.preventDefault()" ondrop="handleDrop(event, 'contaminatie')">
+                <h3>Contaminatie</h3>
+            </div>
+        </div>
+    </div>
+
+    <div id="monitor-screen" class="hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3>Resultatenoverzicht voor extra instructie</h3>
+            <button id="btn-reset" class="btn-reset">RESET SESSIE</button>
+        </div>
+        <div id="monitor-list"></div>
+    </div>
+</div>
+
+<div id="uitleg-modal" class="modal hidden">
+    <div style="background: white; padding: 30px; border-radius: 8px; max-width: 600px;">
+        <h4>Verschillen & Overeenkomsten</h4>
+        <p><strong>De Overeenkomst:</strong> Bij alledrie zeg je eigenlijk te veel (dubbelop).</p>
+        <hr>
+        <p><strong>Tautologie vs Pleonasme:</strong> Bij een tautologie zijn beide woorden van dezelfde soort (bv. twee synoniemen). Bij een pleonasme zegt een bijvoeglijk naamwoord iets wat we al weten over het zelfstandig naamwoord.</p>
+        <p><strong>Contaminatie:</strong> Dit is een 'botsing' tussen twee woorden. Je mengt ze tot iets wat niet bestaat.</p>
+        <button onclick="document.getElementById('uitleg-modal').classList.add('hidden')">Begrepen, terug naar de oefening</button>
+    </div>
+</div>
+
+<div id="thumb-animation">👍</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+    import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyC-Of0AUOd-kVo2RKxYc-68Gr-RO4HdRk0",
+        authDomain: "q2aangifteles2.firebaseapp.com",
+        databaseURL: "https://q2aangifteles2-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "q2aangifteles2",
+        storageBucket: "q2aangifteles2.firebasestorage.app",
+        messagingSenderId: "696806554615",
+        appId: "1:696806554615:web:bd877b1caee23c5283ccf2"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const data = [
+        { t: "De wet is duidelijk en helder.", c: "tautologie" },
+        { t: "De rechter oordeelde kalm en bedaard.", c: "tautologie" },
+        { t: "De getuige vertelde alles open en bloot.", c: "tautologie" },
+        { t: "De officier van justitie eiste een straf voor altijd en eeuwig.", c: "tautologie" },
+        { t: "De rechter sprak het vonnis eerlijk en oprecht uit.", c: "tautologie" },
+        { t: "De advocaat probeerde de jury te overtuigen met woorden en taal.", c: "tautologie" },
+        { t: "De rechter gaf een mondelinge toespraak tot de jury.", c: "pleonasme" },
+        { t: "De advocaat pleitte met woorden voor de onschuld van zijn cliënt.", c: "pleonasme" },
+        { t: "De wet voorziet in een schriftelijk document van beroep.", c: "pleonasme" },
+        { t: "De gevangene bekende zijn criminele misdaden.", c: "pleonasme" },
+        { t: "De getuige zag met eigen ogen het misdrijf gebeuren.", c: "pleonasme" },
+        { t: "De officier van justitie eiste een zware maximumstraf.", c: "pleonasme" },
+        { t: "De gevangene zat achter de tralies in een gevangeniscel.", c: "pleonasme" },
+        { t: "De rechter sprak de verdachte streng toe en zijn advocaat ook.", c: "contaminatie" },
+        { t: "De politieagent telefoneerde de verdachte op.", c: "contaminatie" },
+        { t: "De verdachte leek zich niet te beseffen van de ernst van zijn daden.", c: "contaminatie" },
+        { t: "Er circuleren geruchten rond over corruptie binnen het bureau.", c: "contaminatie" },
+        { t: "De rechercheur checkte de alibi's van de verdachte na.", c: "contaminatie" },
+        { t: "De politie testte de nieuwe wapens uit.", c: "contaminatie" },
+        { t: "Als advocaat zijnde, eis ik vrijspraak.", c: "contaminatie" }
+    ];
+
+    let user = "";
+    let klas = "";
+    let score = 0;
+
+    document.getElementById('btn-login').onclick = () => {
+        user = document.getElementById('username').value.trim();
+        klas = document.getElementById('class-select').value;
+        if(!user) return alert("Naam invullen.");
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('exercise-screen').classList.remove('hidden');
+        initGame();
+    };
+
+    document.getElementById('btn-monitor-mode').onclick = () => {
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('monitor-screen').classList.remove('hidden');
+        initMonitor();
+    };
+
+    function initGame() {
+        const pool = document.getElementById('sentence-pool');
+        const shuffled = data.sort(() => Math.random() - 0.5);
+        shuffled.forEach((obj, i) => {
+            const div = document.createElement('div');
+            div.className = 'draggable-sentence';
+            div.draggable = true;
+            div.innerText = obj.t;
+            div.id = `item-${i}`;
+            div.dataset.cat = obj.c;
+            div.ondragstart = (e) => e.dataTransfer.setData("text", e.target.id);
+            pool.appendChild(div);
+        });
+    }
+
+    window.handleDrop = (e, targetCat) => {
+        const id = e.dataTransfer.getData("text");
+        const el = document.getElementById(id);
+        if(!el) return;
+
+        if(el.dataset.cat === targetCat) {
+            score++;
+            document.getElementById('score-display').innerText = score;
+            e.currentTarget.appendChild(el);
+            el.draggable = false;
+            el.style.background = "#d4edda";
+            showThumb();
+            set(ref(db, `stijlfouten/${klas}/${user}`), { score: score });
+        } else {
+            alert("Onjuist! Kijk in de theorie (hulpknop) voor het verschil.");
+        }
+    };
+
+    function showThumb() {
+        const t = document.getElementById('thumb-animation');
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 700);
+    }
+
+    function initMonitor() {
+        onValue(ref(db, 'stijlfouten'), (snap) => {
+            const list = document.getElementById('monitor-list');
+            list.innerHTML = "";
+            const all = snap.val() || {};
+            for(let k in all) {
+                let html = `<div class="class-header-box"><span>Klas: ${k.toUpperCase()}</span></div>`;
+                for(let u in all[k]) {
+                    const s = all[k][u].score;
+                    const help = s < 14;
+                    html += `<div class="result-card">
+                        <strong>${u}</strong><span>Score: ${s}/20</span>
+                        <span class="${help ? 'status-help' : 'status-ok'}">${help ? '⚠️ Extra instructie' : '✅ Voldoende'}</span>
+                    </div>`;
+                }
+                list.innerHTML += html;
+            }
+        });
+    }
+
+    document.getElementById('btn-reset').onclick = () => {
+        if(confirm("Alle resultaten wissen?")) remove(ref(db, 'stijlfouten'));
+    };
+</script>
+</body>
+</html>
