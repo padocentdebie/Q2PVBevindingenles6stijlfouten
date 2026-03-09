@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Politie Academie - Stijlfouten Training</title>
+    <title>Stijlfouten Training - Focus Modus</title>
     <style>
         :root {
             --police-blue: #1c2b4a;
@@ -35,7 +35,7 @@
 
         .container {
             width: 95%;
-            max-width: 1100px;
+            max-width: 900px;
             margin: 1.5rem 0;
             background: white;
             padding: 2rem;
@@ -67,93 +67,69 @@
             border-left: 3px solid var(--police-blue);
             padding: 1.2rem;
             margin: 1rem 0;
-            font-size: 0.95rem;
         }
 
-        /* Drag & Drop */
-        .drop-zones {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin-top: 1.5rem;
-        }
-
-        .drop-zone {
-            min-height: 250px;
-            border: 1px solid var(--border-gray);
-            border-radius: 4px;
-            padding: 1rem;
-            background: #ffffff;
-        }
-        .drop-zone.hover { background: #f1f3f5; }
-        .drop-zone h3 { text-align: center; color: var(--police-blue); font-weight: normal; font-size: 1rem; margin-top: 0; }
-
-        .sentence-pool {
-            margin: 1.5rem 0;
-            min-height: 100px;
-            padding: 1.5rem;
-            background: #f1f3f5;
-            border-radius: 4px;
+        /* Single Item Pool (Focus Modus) */
+        .sentence-pool-focus {
+            margin: 2rem 0;
+            height: 120px;
             display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
             justify-content: center;
+            align-items: center;
+            background: #f1f3f5;
+            border-radius: 8px;
+            border: 1px dashed var(--police-blue);
         }
 
         .draggable-sentence {
             background: white;
-            padding: 10px 15px;
-            border: 1px solid var(--border-gray);
+            padding: 20px 30px;
+            border: 2px solid var(--police-blue);
             border-radius: 4px;
             cursor: grab;
-            font-size: 0.9rem;
-            max-width: 320px;
+            font-size: 1.1rem;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
         }
 
-        /* Monitor Dashboard */
-        .result-card {
-            background: #ffffff;
-            border: 1px solid var(--border-gray);
-            padding: 0.8rem 1rem;
-            margin-bottom: 0.4rem;
+        .draggable-sentence:active { cursor: grabbing; transform: scale(1.05); }
+
+        /* Drop Zones */
+        .drop-zones {
             display: grid;
-            grid-template-columns: 1fr 100px 120px;
-            align-items: center;
-            border-radius: 4px;
-        }
-        .class-header-box {
-            background: #f1f3f5;
-            color: var(--police-blue);
-            padding: 0.8rem 1rem;
-            margin-top: 1.5rem;
-            border-radius: 4px;
-            font-weight: bold;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
         }
 
-        /* Buttons */
-        button, select, input {
-            width: 100%;
-            padding: 12px 15px;
-            margin: 8px 0;
+        .drop-zone {
+            min-height: 180px;
             border: 1px solid var(--border-gray);
             border-radius: 4px;
-            font-size: 1rem;
-            box-sizing: border-box;
+            padding: 1rem;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        
+        .drop-zone.hover { background: #eef2f7; border-color: var(--police-blue); }
+        .drop-zone h3 { font-weight: normal; font-size: 1rem; color: var(--police-blue); margin-bottom: 1rem; }
+
+        .dropped-mini {
+            font-size: 0.75rem;
+            background: #eefaf1;
+            margin: 2px 0;
+            padding: 4px;
+            border-radius: 2px;
+            width: 100%;
+        }
+
+        /* UI */
+        button, select, input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid var(--border-gray); border-radius: 4px; }
         button { background: var(--police-blue); color: white; cursor: pointer; border: none; font-weight: bold; }
-        .btn-oker { background: var(--soft-oker); color: #403010; }
-        .btn-reset { 
-            background: #ffffff; 
-            color: var(--alert-red); 
-            border: 1px solid var(--alert-red); 
-            width: auto; 
-            padding: 8px 15px; 
-            font-weight: normal; 
-            margin-top: 0;
-        }
-        .btn-reset:hover { background: #fdeded; }
-        
+        .btn-oker { background: var(--soft-oker); color: #403010; width: auto; padding: 8px 15px; font-weight: normal; }
+        .btn-reset { background: white; color: var(--alert-red); border: 1px solid var(--alert-red); width: auto; padding: 8px 15px; font-weight: normal; }
+
         #thumb-animation {
             position: fixed;
             top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
@@ -171,9 +147,7 @@
 
 <div class="container">
     <div id="login-screen">
-        <div style="text-align: right;">
-            <button class="btn-oker" onclick="toggleModal(true)" style="width:auto; padding: 8px 15px; font-weight: normal;">Theorie Factsheet</button>
-        </div>
+        <div style="text-align: right;"><button class="btn-oker" onclick="toggleModal(true)">Theorie</button></div>
         <input type="text" id="username" placeholder="Naam">
         <select id="class-select">
             <option value="delta">Delta</option><option value="echo">Echo</option>
@@ -181,27 +155,44 @@
             <option value="hotel">Hotel</option><option value="juliett">Juliett</option>
             <option value="lima">Lima</option><option value="mike">Mike</option>
         </select>
-        <button id="btn-login">Oefening Starten</button>
-        <button id="btn-monitor-mode" style="background:none; color: gray; font-size: 0.8rem; font-weight: normal;">Docenten Monitor</button>
+        <button id="btn-login">Start Oefening</button>
+        <button id="btn-monitor-mode" style="background:none; color:gray; font-size:0.8rem;">Monitor Dashboard</button>
     </div>
 
     <div id="exercise-screen" class="hidden">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-            <button onclick="toggleModal(true)" style="width:auto; padding:8px 15px; font-size:0.8rem; background: #607d8b;">Uitleg</button>
-            <span>Score: <span id="score-display">0</span> / 20</span>
+            <span>Vraag <span id="current-count">1</span> / 20</span>
+            <strong>Score: <span id="score-display">0</span></strong>
         </div>
-        <div id="sentence-pool" class="sentence-pool"></div>
+
+        <div id="sentence-pool" class="sentence-pool-focus">
+            </div>
+
+        <div id="completion-msg" class="hidden" style="text-align:center; padding: 2rem;">
+            <h2>Goed gedaan!</h2>
+            <p>Je hebt alle zinnen correct gecategoriseerd.</p>
+        </div>
+
         <div class="drop-zones">
-            <div class="drop-zone" id="tautologie" ondragover="event.preventDefault(); this.classList.add('hover')" ondragleave="this.classList.remove('hover')" ondrop="handleDrop(event, 'tautologie')"><h3>Tautologie</h3></div>
-            <div class="drop-zone" id="pleonasme" ondragover="event.preventDefault(); this.classList.add('hover')" ondragleave="this.classList.remove('hover')" ondrop="handleDrop(event, 'pleonasme')"><h3>Pleonasme</h3></div>
-            <div class="drop-zone" id="contaminatie" ondragover="event.preventDefault(); this.classList.add('hover')" ondragleave="this.classList.remove('hover')" ondrop="handleDrop(event, 'contaminatie')"><h3>Contaminatie</h3></div>
+            <div class="drop-zone" id="tautologie" ondragover="event.preventDefault(); this.classList.add('hover')" ondragleave="this.classList.remove('hover')" ondrop="handleDrop(event, 'tautologie')">
+                <h3>Tautologie</h3>
+                <div class="dropped-list"></div>
+            </div>
+            <div class="drop-zone" id="pleonasme" ondragover="event.preventDefault(); this.classList.add('hover')" ondragleave="this.classList.remove('hover')" ondrop="handleDrop(event, 'pleonasme')">
+                <h3>Pleonasme</h3>
+                <div class="dropped-list"></div>
+            </div>
+            <div class="drop-zone" id="contaminatie" ondragover="event.preventDefault(); this.classList.add('hover')" ondragleave="this.classList.remove('hover')" ondrop="handleDrop(event, 'contaminatie')">
+                <h3>Contaminatie</h3>
+                <div class="dropped-list"></div>
+            </div>
         </div>
     </div>
 
     <div id="monitor-screen" class="hidden">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="font-weight: normal;">Live Resultaten</h3>
-            <button id="btn-reset-action" class="btn-reset">RESET ALLE DATA</button>
+            <h3>Resultatenoverzicht</h3>
+            <button id="btn-reset-db" class="btn-reset">RESET DATABASE</button>
         </div>
         <div id="monitor-list"></div>
     </div>
@@ -209,11 +200,11 @@
 
 <div id="factsheet-modal" class="modal-overlay hidden">
     <div class="modal-content">
-        <h2 style="font-weight: normal;">Factsheet: Stijlfouten</h2>
+        <h2>Uitleg Stijlfouten</h2>
         <div class="instruction-box">
-            <p><strong>Tautologie:</strong> Twee verschillende woorden met dezelfde betekenis (synoniemen). <i>Bv: "Vast en zeker".</i></p>
-            <p><strong>Pleonasme:</strong> Een eigenschap benoemen die al in het hoofdwoord zit. <i>Bv: "Het witte papier".</i></p>
-            <p><strong>Contaminatie:</strong> Twee begrippen die tot een foute mix zijn gemaakt. <i>Bv: "Nachecken".</i></p>
+            <p><b>Tautologie:</b> Twee synoniemen. (<i>Bv: "Vast en zeker"</i>)</p>
+            <p><b>Pleonasme:</b> Eigenschap benoemen. (<i>Bv: "Witte sneeuw"</i>)</p>
+            <p><b>Contaminatie:</b> Foute mix. (<i>Bv: "Nachecken"</i>)</p>
         </div>
         <button class="btn-oker" onclick="toggleModal(false)">Sluiten</button>
     </div>
@@ -238,7 +229,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    const data = [
+    const fullData = [
         { t: "De wet is duidelijk en helder.", c: "tautologie" }, { t: "De rechter oordeelde kalm en bedaard.", c: "tautologie" },
         { t: "De getuige vertelde alles open en bloot.", c: "tautologie" }, { t: "De officier van justitie eiste een straf voor altijd en eeuwig.", c: "tautologie" },
         { t: "De rechter sprak het vonnis eerlijk en oprecht uit.", c: "tautologie" }, { t: "De advocaat probeerde de jury te overtuigen met woorden en taal.", c: "tautologie" },
@@ -251,20 +242,18 @@
         { t: "De politie testte de nieuwe wapens uit.", c: "contaminatie" }, { t: "Als advocaat zijnde, eis ik vrijspraak.", c: "contaminatie" }
     ];
 
-    let user = "", klas = "", score = 0;
+    let user = "", klas = "", score = 0, currentIdx = 0, shuffled = [];
 
-    window.toggleModal = (show) => {
-        const modal = document.getElementById('factsheet-modal');
-        show ? modal.classList.remove('hidden') : modal.classList.add('hidden');
-    };
+    window.toggleModal = (s) => document.getElementById('factsheet-modal').classList.toggle('hidden', !s);
 
     document.getElementById('btn-login').onclick = () => {
         user = document.getElementById('username').value.trim();
         klas = document.getElementById('class-select').value;
-        if(!user) return alert("Naam verplicht.");
+        if(!user) return alert("Naam?");
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('exercise-screen').classList.remove('hidden');
-        initGame();
+        shuffled = [...fullData].sort(() => Math.random() - 0.5);
+        showNextSentence();
     };
 
     document.getElementById('btn-monitor-mode').onclick = () => {
@@ -273,38 +262,43 @@
         initMonitor();
     };
 
-    function initGame() {
+    function showNextSentence() {
         const pool = document.getElementById('sentence-pool');
         pool.innerHTML = "";
-        const shuffled = [...data].sort(() => Math.random() - 0.5);
-        shuffled.forEach((obj, i) => {
+        if(currentIdx < shuffled.length) {
+            document.getElementById('current-count').innerText = currentIdx + 1;
+            const obj = shuffled[currentIdx];
             const div = document.createElement('div');
             div.className = 'draggable-sentence';
             div.draggable = true;
             div.innerText = obj.t;
-            div.id = `item-${i}`;
             div.dataset.cat = obj.c;
-            div.ondragstart = (e) => e.dataTransfer.setData("text", e.target.id);
+            div.ondragstart = (e) => e.dataTransfer.setData("text", obj.c);
             pool.appendChild(div);
-        });
+        } else {
+            pool.classList.add('hidden');
+            document.getElementById('completion-msg').classList.remove('hidden');
+        }
     }
 
     window.handleDrop = (e, targetCat) => {
         e.currentTarget.classList.remove('hover');
-        const id = e.dataTransfer.getData("text");
-        const el = document.getElementById(id);
-        if(!el) return;
+        const correctCat = e.dataTransfer.getData("text");
 
-        if(el.dataset.cat === targetCat) {
+        if(correctCat === targetCat) {
             score++;
             document.getElementById('score-display').innerText = score;
-            e.currentTarget.appendChild(el);
-            el.draggable = false;
-            el.style.background = "#eefaf1";
+            const mini = document.createElement('div');
+            mini.className = 'dropped-mini';
+            mini.innerText = shuffled[currentIdx].t;
+            e.currentTarget.querySelector('.dropped-list').appendChild(mini);
+            
             showThumb();
             set(ref(db, `stijlfouten/${klas}/${user}`), { score: score });
+            currentIdx++;
+            setTimeout(showNextSentence, 500);
         } else {
-            alert("Niet correct. Probeer het opnieuw.");
+            alert("Helaas, niet de juiste categorie.");
         }
     };
 
@@ -323,23 +317,14 @@
                 let html = `<div class="class-header-box">Klas: ${k.toUpperCase()}</div>`;
                 for(let u in all[k]) {
                     const s = all[k][u].score;
-                    const help = s < 14;
-                    html += `<div class="result-card">
-                        <span>${u}</span>
-                        <span style="text-align:center">${s}/20</span>
-                        <span style="color:${help ? 'red':'green'}; text-align:right;">${help ? 'Hulp nodig' : 'Voldoende'}</span>
-                    </div>`;
+                    html += `<div class="result-card"><span>${u}</span><span style="text-align:center">${s}/20</span><span style="text-align:right; color:${s<14?'red':'green'}">${s<14?'Instructie':'OK'}</span></div>`;
                 }
                 list.innerHTML += html;
             }
         });
     }
 
-    document.getElementById('btn-reset-action').onclick = () => {
-        if(confirm("Weet je zeker dat je alle scores wilt wissen?")) {
-            remove(ref(db, 'stijlfouten'));
-        }
-    };
+    document.getElementById('btn-reset-db').onclick = () => { if(confirm("Data wissen?")) remove(ref(db, 'stijlfouten')); };
 </script>
 </body>
 </html>
