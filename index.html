@@ -58,12 +58,14 @@
         .btn-gold { background: var(--police-gold); }
         .btn-reset { background: var(--alert-red); margin-top: 20px; }
 
-        /* Referentiekader Styling */
+        /* Het Referentiekader zoals door jou aangeleverd */
         #info-blok {
-            margin-bottom: 1.5rem;
-            padding: 15px;
+            max-width: 1000px;
+            text-align: left;
             background: #eef2ff;
             border-left: 8px solid var(--police-blue);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
             border-radius: 4px;
         }
 
@@ -76,10 +78,10 @@
             font-size: 1.1rem;
         }
 
-        /* Sticky Note Feedback */
+        /* Sticky Note Feedback Prikbord */
         #peer-feedback-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 20px;
             margin-top: 20px;
         }
@@ -116,14 +118,14 @@
 
         /* Monitor */
         .class-section { margin-top: 20px; border: 1px solid #ddd; border-radius: 5px; overflow: hidden; }
-        .class-header { background: #eee; padding: 10px; font-weight: bold; }
+        .class-header { background: #eee; padding: 10px; font-weight: bold; text-transform: uppercase; }
         .answer-row { padding: 10px; border-bottom: 1px solid #eee; display: grid; grid-template-columns: 120px 1fr 180px; font-size: 0.85rem; }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>GGP Taaldrempel - Stijlfouten & Dubbelop</h1>
+    <h1>GGP Taaldrempel - Stijlfouten & Grammatica</h1>
 </header>
 
 <div class="container">
@@ -146,18 +148,27 @@
     </div>
 
     <div id="lesson-screen" class="hidden">
+        
         <div id="info-blok">
-            <h2 style="margin-top: 0; color: var(--police-blue); text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px;">📘 Referentiekader Stijlfouten</h2>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 0.8rem;">
+            <h2 style="margin-top: 0; color: var(--police-blue); text-transform: uppercase; font-size: 1rem; letter-spacing: 1px;">📘 Referentiekader Stijlfouten</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                 <div>
-                    <strong>Tautologie:</strong> Twee keer hetzelfde zeggen met andere woorden (<em>Vast en zeker</em>).
+                    <strong style="color: #1e40af;">Tautologie</strong><br>
+                    <small style="font-style: italic; color: #64748b;">Grieks: 'tauto' (hetzelfde) + 'logos' (woord)</small>
+                    <p style="font-size: 0.9rem; margin-top: 5px;">Er worden <strong>twee verschillende woorden</strong> gebruikt die precies <strong>dezelfde betekenis</strong> hebben.<br>
+                    <span style="color: #475569; font-size: 0.8rem;"><em>Bv: "Vast en zeker", "Gratis en voor niets".</em></span></p>
                 </div>
                 <div>
-                    <strong>Pleonasme:</strong> Een vanzelfsprekende eigenschap herhalen (<em>Witte sneeuw</em>).
+                    <strong style="color: #b91c1c;">Pleonasme</strong><br>
+                    <small style="font-style: italic; color: #64748b;">Grieks: 'pleonasmos' (overtollig)</small>
+                    <p style="font-size: 0.9rem; margin-top: 5px;">Een <strong>eigenschap</strong> die al in het hoofdwoord zit, wordt <strong>nogmaals benadrukt</strong>.<br>
+                    <span style="color: #475569; font-size: 0.8rem;"><em>Bv: "Witte sneeuw", "Ronde cirkel".</em></span></p>
                 </div>
             </div>
-            <div style="margin-top: 5px; font-size: 0.8rem; border-top: 1px dashed #cbd5e1; padding-top: 5px;">
-                <strong>Contaminatie:</strong> Twee woorden/uitdrukkingen verkeerd mixen (<em>Optelefoneren</em>).
+            <div style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #cbd5e1;">
+                <strong style="color: #15803d;">Contaminatie</strong><br>
+                <p style="font-size: 0.9rem; margin-top: 5px;">Twee woorden of uitdrukkingen worden <strong>verkeerd gecombineerd</strong>.<br>
+                <span style="color: #475569; font-size: 0.8rem;"><em>Bv: "Optelefoneren" (Opbellen + Telefoneren).</em></span></p>
             </div>
         </div>
 
@@ -214,7 +225,7 @@
         "De gestolen fiets was rond van vorm.",
         "De politie probeert het probleem op te lossen.",
         "Dat kost duur als je dat wilt vervangen.",
-        "Zij was een van de weinige getuigen die dat opgemerkt hadden.",
+        "Zij was een van de weinige getuigen die dat opgemerkt had.", // Gecorrigeerd naar foutieve vorm voor de oefening
         "De verdachte sprong naar beneden op de grond.",
         "Wij moeten onze plannen even uitprinten.",
         "Het is een feit dat de verdachte loog, want feiten zijn waar.",
@@ -236,7 +247,7 @@
     document.getElementById('btn-login').onclick = () => {
         currentUser = document.getElementById('username').value.trim();
         currentClass = document.getElementById('class-select').value;
-        if(!currentUser) return alert("Naam?");
+        if(!currentUser) return alert("Vul je naam in.");
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('lesson-screen').classList.remove('hidden');
         initSync(false);
@@ -263,15 +274,6 @@
         });
     }
 
-    document.getElementById('btn-next').onclick = () => changeStep(1);
-    document.getElementById('btn-prev').onclick = () => changeStep(-1);
-    document.getElementById('btn-reset').onclick = async () => {
-        if(confirm("Alles wissen?")) {
-            await set(ref(db, 'session/currentStep'), 0);
-            await remove(ref(db, 'corrections'));
-        }
-    };
-
     function changeStep(delta) {
         runTransaction(ref(db, 'session/currentStep'), (c) => {
             let next = (c || 0) + delta;
@@ -279,15 +281,25 @@
         });
     }
 
+    document.getElementById('btn-next').onclick = () => changeStep(1);
+    document.getElementById('btn-prev').onclick = () => changeStep(-1);
+    document.getElementById('btn-reset').onclick = async () => {
+        if(confirm("Alle data wissen?")) {
+            await set(ref(db, 'session/currentStep'), 0);
+            await remove(ref(db, 'corrections'));
+        }
+    };
+
     document.getElementById('btn-submit').onclick = () => {
         const text = document.getElementById('correction-input').value.trim();
         if(!text) return;
         onValue(ref(db, 'session/currentStep'), (s) => {
-            set(ref(db, `corrections/${s.val()||0}/${currentClass}/${currentUser}`), { 
-                text, tip_tau: 0, tip_pleo: 0, tip_cont: 0 
+            const step = s.val() || 0;
+            set(ref(db, `corrections/${step}/${currentClass}/${currentUser}`), { 
+                text, tip_tau: 0, tip_pleo: 0, tip_cont: 0, tip_gram: 0
             });
             document.getElementById('correction-input').value = "";
-            alert("Verzonden!");
+            alert("Verbetering verzonden!");
         }, { onlyOnce: true });
     };
 
@@ -304,14 +316,15 @@
                     card.className = 'feedback-card';
                     list.appendChild(card);
                 }
-                const entry = data[user];
+                const e = data[user];
                 card.innerHTML = `
                     <b>${user}</b>
-                    <p style="margin:0; font-size:0.9rem;">"${entry.text}"</p>
+                    <p style="margin:0; font-size:0.9rem;">"${e.text}"</p>
                     <div class="tip-container">
-                        <button class="tip-btn" onclick="window.giveTip('${step}','${user}','tip_tau')">💡 Tip: Is dit een Tautologie? (${entry.tip_tau||0})</button>
-                        <button class="tip-btn" onclick="window.giveTip('${step}','${user}','tip_pleo')">💡 Tip: Is dit een Pleonasme? (${entry.tip_pleo||0})</button>
-                        <button class="tip-btn" onclick="window.giveTip('${step}','${user}','tip_cont')">💡 Tip: Is dit een Contaminatie? (${entry.tip_cont||0})</button>
+                        <button class="tip-btn" onclick="window.giveTip('${step}','${user}','tip_tau')">💡 Tip: Tautologie? (${e.tip_tau||0})</button>
+                        <button class="tip-btn" onclick="window.giveTip('${step}','${user}','tip_pleo')">💡 Tip: Pleonasme? (${e.tip_pleo||0})</button>
+                        <button class="tip-btn" onclick="window.giveTip('${step}','${user}','tip_cont')">💡 Tip: Contaminatie? (${e.tip_cont||0})</button>
+                        <button class="tip-btn" onclick="window.giveTip('${step}','${user}','tip_gram')">✍️ Tip: Grammatica? (${e.tip_gram||0})</button>
                     </div>
                 `;
             }
@@ -324,17 +337,17 @@
             monitorDiv.innerHTML = "";
             const allData = snapshot.val() || {};
             klassen.forEach(klas => {
-                let html = `<div class="class-section"><div class="class-header">${klas.toUpperCase()}</div>`;
+                let html = `<div class="class-section"><div class="class-header">Klas: ${klas}</div>`;
                 if(allData[klas]) {
                     for(let user in allData[klas]) {
                         const e = allData[klas][user];
                         html += `<div class="answer-row">
                             <strong>${user}</strong>
                             <span>${e.text}</span>
-                            <span style="font-size:0.7rem; color: #666;">T:${e.tip_tau||0} | P:${e.tip_pleo||0} | C:${e.tip_cont||0}</span>
+                            <span style="font-size:0.7rem; color: #666;">T:${e.tip_tau||0} P:${e.tip_pleo||0} C:${e.tip_cont||0} G:${e.tip_gram||0}</span>
                         </div>`;
                     }
-                } else { html += `<div style="padding:10px; color:#999;">Geen inzendingen...</div>`; }
+                } else { html += `<div style="padding:10px; color:#999; font-style:italic;">Nog geen inzendingen...</div>`; }
                 monitorDiv.innerHTML += html + `</div>`;
             });
         });
